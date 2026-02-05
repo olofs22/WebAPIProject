@@ -33,6 +33,37 @@ namespace WebAPIProject.Services
             _tournaments.Add(tournament);
             return tournament;
         }
-        public 
+        public bool Update(int id, Tournaments tournament)
+        {
+            Tournaments? existingTournament = null;
+            {
+                foreach (Tournaments candidate in _tournaments)
+                {
+                    if (candidate.Id == id)
+                    {
+                        existingTournament = candidate;
+                        break;
+                    }
+                }
+                if (existingTournament == null)
+                    return false;
+
+                existingTournament.Title = tournament.Title;
+                existingTournament.Description = tournament.Description;
+                return true;
+            }
+        }
+        public bool Delete(int id)
+        {
+            for (int i = _tournaments.Count - 1; i >= 0; 1--)
+            {
+                if (_tournaments[i].Id == id)
+                {
+                    _tournaments.RemoveAt(i);
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }
