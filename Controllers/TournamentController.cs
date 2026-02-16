@@ -1,7 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using WebAPIProject.DTO;
 using WebAPIProject.Models;
 using WebAPIProject.Services;
-using System.Linq;
 
 namespace WebAPIProject.Controllers
 {
@@ -16,7 +17,7 @@ namespace WebAPIProject.Controllers
         }
 
         [HttpGet] //specify function for GET endpoint
-        public ActionResult<IEnumerable<Tournaments>> Get([FromQuery] string? title) //funtion to get a list of tournaments by title or all if not specified
+        public ActionResult<IEnumerable<Tournaments>> Get([FromQuery] string? title) //funtion to get a list of tournament objects by title or all if not specified
         {
             if (!string.IsNullOrWhiteSpace(title))
             {
@@ -28,16 +29,34 @@ namespace WebAPIProject.Controllers
         }
 
         [HttpGet("{int id}")] //specify function for GET(id) endpoint
-        public ActionResult<Tournaments> Get(int id) //function to get a tournament through a specified id
+        public ActionResult<TournamentResponseDTO> GetById(int id) //function to get a tournament object through a specified id
         {
             var tournament = _tournamentsService.GetById(id); //goes through service to find tournament with specified id
-            if (tournament == null) //                  <-                      
-                return NotFound(); //404 code if not found  
-
             return Ok(tournament); //200 code if found
         }
 
         [HttpPost]
+        public ActionResult<TournamentResponseDTO> Create(TournamentCreateDTO tcdto)
+        {
+            var createdTournament = _tournamentsService.Create(tcdto);  // ← Fungerar nu!
+            return CreatedAtAction(nameof(Get), new { id = createdTournament.Id }, createdTournament);
+        }
 
+        [HttpPut("{id:it}")]
+        public ActionResult<TournamentResponseDTO> Update(int id, TournamentUpdateDTO tudto)
+        {
+            var updatedTournament = _tournamentsService.Update(id, tudto);
+            if (updatedTournament == null)
+                return NotFound();
+            return Ok(updatedTournament);
+        }
+
+        [HttpDelete("{id:int}")]
+        public ActionResult Delete(int id)
+        {
+            if (!_tournamentsService.Delete(id))
+                return NotFound();
+            return NoContent();
+        }
     }
 }
