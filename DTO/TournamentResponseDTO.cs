@@ -1,12 +1,11 @@
-﻿namespace WebAPIProject.Models
+﻿namespace WebAPIProject.DTO
 {
-    public class Tournaments
+    public class TournamentResponseDTO
     {
         public int Id { get; set; }
-        public string Title { get; set; }
+        public string Title { get; set; } = null;
         public string Description { get; set; }
         public int MaxPlayers { get; set; }
         public DateTime StartDate { get; set; }
-        public ICollection<Games> Games { get; set; }
     }
 }
