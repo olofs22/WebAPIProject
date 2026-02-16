@@ -11,5 +11,15 @@ namespace WebAPIProject.Data
         {
 
         }
+        public DbSet<Tournaments> tournaments { get; set; }
+        public DbSet<Games> games { get; set; }
+        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Games>()
+                .HasOne(g => g.Tournament)
+                .WithMany(t => t.Games)
+                .HasForeignKey(g => g.TournamentId);
+        }
     }
 }

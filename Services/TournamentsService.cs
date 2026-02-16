@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using WebAPIProject.Data;
-using WebAPIProject.DTO;
+using WebAPIProject.DTO.TournamentDTOs;
 using WebAPIProject.Models;
 
 namespace WebAPIProject.Services
@@ -17,9 +17,25 @@ namespace WebAPIProject.Services
         {
             _context = context;
         }
-        public IEnumerable<Tournaments> GetAll()
+        public List<TournamentResponseDTO> GetAll(string? search = null)
         {
-            return _context.tournament.ToList();
+            var query = _context.tournament.AsQueryable();
+
+            if (!string.IsNullOrEmpty(search))
+            {
+                query = query.Where(t => t.Title.Contains(search));
+            }
+
+            var tournaments = query.ToList();
+
+            return tournaments.Select(t => new TournamentResponseDTO
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                MaxPlayers = t.MaxPlayers,
+                StartDate = t.StartDate
+            }).ToList();
         }
         public Tournaments? GetById (int id)
         {

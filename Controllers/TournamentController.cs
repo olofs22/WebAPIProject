@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-using WebAPIProject.DTO;
+using WebAPIProject.DTO.TournamentDTOs;
 using WebAPIProject.Models;
 using WebAPIProject.Services;
 
@@ -17,18 +17,13 @@ namespace WebAPIProject.Controllers
         }
 
         [HttpGet] //specify function for GET endpoint
-        public ActionResult<IEnumerable<Tournaments>> Get([FromQuery] string? title) //funtion to get a list of tournament objects by title or all if not specified
+        public ActionResult<List<TournamentResponseDTO>> GetAll(string? search = null) //funtion to get a list of tournament objects by title or all if not specified
         {
-            if (!string.IsNullOrWhiteSpace(title))
-            {
-                var tournament = _tournamentsService.GetByTitle(title); //using service to find tournament with specified title
-                if (tournament == null) return NotFound(); //404 code of not found
-                return Ok(new[] { tournament });
-            }
-            return Ok(_tournamentsService.GetAll()); //200 code if found
+            var tournaments = _tournamentsService.GetAll(search);
+            return Ok(tournaments);
         }
 
-        [HttpGet("{int id}")] //specify function for GET(id) endpoint
+        [HttpGet("{id:int}")] //specify function for GET(id) endpoint
         public ActionResult<TournamentResponseDTO> GetById(int id) //function to get a tournament object through a specified id
         {
             var tournament = _tournamentsService.GetById(id); //goes through service to find tournament with specified id
@@ -39,10 +34,10 @@ namespace WebAPIProject.Controllers
         public ActionResult<TournamentResponseDTO> Create(TournamentCreateDTO tcdto)
         {
             var createdTournament = _tournamentsService.Create(tcdto);  // ← Fungerar nu!
-            return CreatedAtAction(nameof(Get), new { id = createdTournament.Id }, createdTournament);
+            return CreatedAtAction(nameof(GetAll), new { id = createdTournament.Id }, createdTournament);
         }
 
-        [HttpPut("{id:it}")]
+        [HttpPut("{id:int}")]
         public ActionResult<TournamentResponseDTO> Update(int id, TournamentUpdateDTO tudto)
         {
             var updatedTournament = _tournamentsService.Update(id, tudto);
