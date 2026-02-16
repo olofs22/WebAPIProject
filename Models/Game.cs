@@ -6,6 +6,6 @@
         public string Title { get; set; }
         public DateTime Time { get; set; }
         public int TournamentId { get; set; }
-        public Tournaments Tournament { get; set; }
+        public Tournaments Tournament { get; set; } = null!;
     }
 }

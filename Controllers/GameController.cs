@@ -29,7 +29,7 @@ namespace WebAPIProject.Controllers
         public ActionResult<GameResponseDTO> GetById(int id) //function to get a tournament object through a specified id
         {
             var game = _gamesService.GetById(id); //goes through service to find tournament with specified id
-           
+               
             return Ok(new GameResponseDTO  
             {
                 Id = game.Id,

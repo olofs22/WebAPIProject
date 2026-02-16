@@ -12,8 +12,8 @@ using WebAPIProject.Data;
 namespace WebAPIProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260216181605_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20260216201332_ConfigureTournamentRelationship")]
+    partial class ConfigureTournamentRelationship
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,7 @@ namespace WebAPIProject.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("WebAPIProject.Models.Games", b =>
+            modelBuilder.Entity("WebAPIProject.Models.Game", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -77,7 +77,7 @@ namespace WebAPIProject.Migrations
                     b.ToTable("tournaments");
                 });
 
-            modelBuilder.Entity("WebAPIProject.Models.Games", b =>
+            modelBuilder.Entity("WebAPIProject.Models.Game", b =>
                 {
                     b.HasOne("WebAPIProject.Models.Tournaments", "Tournament")
                         .WithMany("Games")

@@ -37,9 +37,20 @@ namespace WebAPIProject.Services
                 TournamentId = t.TournamentId
             }).ToList();
         }
-        public Game? GetById(int id)
+        public GameResponseDTO GetById(int id)
         {
-            return _context.games.Find(id);
+            var game = _context.games
+                .Include(g => g.Tournament)  
+                .FirstOrDefault(g => g.Id == id);
+
+            return new GameResponseDTO
+            {
+                Id = game.Id,
+                Title = game.Title,
+                Time = game.Time,
+                TournamentId = game.TournamentId,
+                Tournament = game.Tournament  
+            };
         }
         public GameResponseDTO Create(GameCreateDTO gcdto)
         {

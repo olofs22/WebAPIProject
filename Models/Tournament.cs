@@ -7,6 +7,6 @@
         public string Description { get; set; }
         public int MaxPlayers { get; set; }
         public DateTime StartDate { get; set; }
-        public List<Game> Games { get; set; } = new();
+        public ICollection<Game> Games { get; set; } = new List<Game>();
     }
 }
