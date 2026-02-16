@@ -44,7 +44,7 @@ namespace WebAPIProject.Migrations
 
                     b.HasIndex("TournamentId");
 
-                    b.ToTable("Games");
+                    b.ToTable("games");
                 });
 
             modelBuilder.Entity("WebAPIProject.Models.Tournaments", b =>
@@ -71,7 +71,7 @@ namespace WebAPIProject.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tournaments");
+                    b.ToTable("tournaments");
                 });
 
             modelBuilder.Entity("WebAPIProject.Models.Games", b =>

@@ -1,4 +1,5 @@
 ﻿using WebAPIProject.Models;
+using WebAPIProject.DTO.GamesDTOs;
 
 namespace WebAPIProject.DTO.TournamentDTOs
 {
@@ -6,9 +7,9 @@ namespace WebAPIProject.DTO.TournamentDTOs
     {
         public int Id { get; set; }
         public string Title { get; set; } = null;
-        public string Description { get; set; }
+        public string Description { get; set; } = null;
         public int MaxPlayers { get; set; }
         public DateTime StartDate { get; set; }
-        public ICollection<Games> Games { get; set; }
+        public List<GameResponseDTO> Games { get; set; } = new();
     }
 }

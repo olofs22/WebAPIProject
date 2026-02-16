@@ -12,7 +12,7 @@ namespace WebAPIProject.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Tournaments",
+                name: "tournaments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -24,11 +24,11 @@ namespace WebAPIProject.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tournaments", x => x.Id);
+                    table.PrimaryKey("PK_tournaments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Games",
+                name: "games",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -39,18 +39,18 @@ namespace WebAPIProject.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Games", x => x.Id);
+                    table.PrimaryKey("PK_games", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Games_Tournaments_TournamentId",
+                        name: "FK_games_tournaments_TournamentId",
                         column: x => x.TournamentId,
-                        principalTable: "Tournaments",
+                        principalTable: "tournaments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Games_TournamentId",
-                table: "Games",
+                name: "IX_games_TournamentId",
+                table: "games",
                 column: "TournamentId");
         }
 
@@ -58,10 +58,10 @@ namespace WebAPIProject.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Games");
+                name: "games");
 
             migrationBuilder.DropTable(
-                name: "Tournaments");
+                name: "tournaments");
         }
     }
 }
