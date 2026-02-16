@@ -19,7 +19,7 @@ namespace WebAPIProject.Services
         }
         public List<TournamentResponseDTO> GetAll(string? search = null)
         {
-            var query = _context.tournament.AsQueryable();
+            var query = _context.tournaments.AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -39,11 +39,11 @@ namespace WebAPIProject.Services
         }
         public Tournaments? GetById (int id)
         {
-            return _context.tournament.Find(id);
+            return _context.tournaments.Find(id);
         }
         public Tournaments? GetByTitle(string title)
         {
-            return _context.tournament.FirstOrDefault(i => i.Title == title);
+            return _context.tournaments.FirstOrDefault(i => i.Title == title);
         }
         public TournamentResponseDTO Create(TournamentCreateDTO tcdto)
         {
@@ -55,7 +55,7 @@ namespace WebAPIProject.Services
                 StartDate = tcdto.StartDate
             };
 
-            _context.tournament.Add(tournament);
+            _context.tournaments.Add(tournament);
             _context.SaveChanges();
 
             return new TournamentResponseDTO  // ← Mappa entity → ResponseDTO
@@ -69,7 +69,7 @@ namespace WebAPIProject.Services
         }
         public TournamentResponseDTO? Update(int id, TournamentUpdateDTO tudto)
         {
-            var tournament = _context.tournament.Find(id);
+            var tournament = _context.tournaments.Find(id);
             if (tournament == null) return null;
 
             if (tudto.Title != null)
@@ -98,11 +98,11 @@ namespace WebAPIProject.Services
         }
         public bool Delete(int id)
         {
-            var tournament = _context.tournament.Find(id);
+            var tournament = _context.tournaments.Find(id);
             if (tournament == null)
                 return false;
 
-            _context.tournament.Remove(tournament);
+            _context.tournaments.Remove(tournament);
             _context.SaveChanges();
             return true;
         }
