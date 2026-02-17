@@ -10,6 +10,6 @@ namespace WebAPIProject.DTO.GamesDTOs
         public string Title { get; set; } = null!;
         public DateTime Time { get; set; }
         public int TournamentId { get; set; }
-        public Tournaments Tournament { get; set; } = null!;
+        public TournamentResponseDTO? Tournament { get; set; } = null!;
     }
 }

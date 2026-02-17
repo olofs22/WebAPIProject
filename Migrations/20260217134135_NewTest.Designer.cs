@@ -12,8 +12,8 @@ using WebAPIProject.Data;
 namespace WebAPIProject.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260216201332_ConfigureTournamentRelationship")]
-    partial class ConfigureTournamentRelationship
+    [Migration("20260217134135_NewTest")]
+    partial class NewTest
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

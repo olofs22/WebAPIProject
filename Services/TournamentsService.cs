@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using WebAPIProject.Data;
+using WebAPIProject.DTO.GamesDTOs;
 using WebAPIProject.DTO.TournamentDTOs;
 using WebAPIProject.Models;
 
@@ -17,16 +18,18 @@ namespace WebAPIProject.Services
         {
             _context = context;
         }
-        public List<TournamentResponseDTO> GetAll(string? search = null)
+        public async Task<List<TournamentResponseDTO>> GetAll(string? search = null)
         {
-            var query = _context.tournaments.AsQueryable();
+            var query = _context.Tournaments
+                .Include(t => t.Games)
+                .AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(t => t.Title.Contains(search));
             }
 
-            var tournaments = query.ToList();
+            var tournaments = await query.ToListAsync();
 
             return tournaments.Select(t => new TournamentResponseDTO
             {
@@ -34,31 +37,48 @@ namespace WebAPIProject.Services
                 Title = t.Title,
                 Description = t.Description,
                 MaxPlayers = t.MaxPlayers,
-                StartDate = t.StartDate
+                StartDate = t.StartDate,
+                Games = t.Games.Select(g => new GameResponseDTO
+                {
+                    Id = g.Id,
+                    Title = g.Title,
+                    Time = g.Time,
+                    TournamentId = g.TournamentId,
+                    Tournament = null 
+                }).ToList()
             }).ToList();
         }
-        public Tournaments? GetById (int id)
+        public async Task<TournamentResponseDTO> GetById (int id)
         {
-            return _context.tournaments.Find(id);
-        }
-        public Tournaments? GetByTitle(string title)
-        {
-            return _context.tournaments.FirstOrDefault(i => i.Title == title);
-        }
-        public TournamentResponseDTO Create(TournamentCreateDTO tcdto)
-        {
-            var tournament = new Tournaments  // ← Mappa DTO → entity
+            var tournament = await _context.Tournaments
+                .Include(t => t.Games)
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+            if (tournament == null) return null;
+
+            return new TournamentResponseDTO
             {
-                Title = tcdto.Title,
-                Description = tcdto.Description,
-                MaxPlayers = tcdto.MaxPlayers,
-                StartDate = tcdto.StartDate
+                Id = tournament.Id,
+                Title = tournament.Title,
+                Description = tournament.Description,
+                MaxPlayers = tournament.MaxPlayers,
+                StartDate = tournament.StartDate,
+                Games = tournament.Games.Select(g => new GameResponseDTO
+                {
+                    Id = g.Id,
+                    Title = g.Title,
+                    Time = g.Time,
+                    TournamentId = g.TournamentId,
+                    Tournament = null 
+                }).ToList()
             };
+        }
+        public async Task<TournamentResponseDTO> GetByTitle(string title)
+        {
+            var tournament = await _context.Tournaments.FirstOrDefaultAsync(t => t.Title == title);
+            if (tournament == null) return null;
 
-            _context.tournaments.Add(tournament);
-            _context.SaveChanges();
-
-            return new TournamentResponseDTO  // ← Mappa entity → ResponseDTO
+            return new TournamentResponseDTO
             {
                 Id = tournament.Id,
                 Title = tournament.Title,
@@ -67,9 +87,24 @@ namespace WebAPIProject.Services
                 StartDate = tournament.StartDate
             };
         }
-        public TournamentResponseDTO? Update(int id, TournamentUpdateDTO tudto)
+        public async Task<TournamentResponseDTO> Create(TournamentCreateDTO tcdto)
         {
-            var tournament = _context.tournaments.Find(id);
+            var tournament = new Tournaments  
+            {
+                Title = tcdto.Title,
+                Description = tcdto.Description,
+                MaxPlayers = tcdto.MaxPlayers,
+                StartDate = tcdto.StartDate
+            };
+
+            _context.Tournaments.Add(tournament);
+            await _context.SaveChangesAsync();
+
+            return await GetById(tournament.Id);
+        }
+        public async Task<TournamentResponseDTO> Update(int id, TournamentUpdateDTO tudto)
+        {
+            var tournament = await _context.Tournaments.FindAsync(id);
             if (tournament == null) return null;
 
             if (tudto.Title != null)
@@ -84,26 +119,18 @@ namespace WebAPIProject.Services
             if (tudto.StartDate.HasValue)
                 tournament.StartDate = tudto.StartDate.Value;
 
-            _context.SaveChanges();
-
-            // Returnera ResponseDTO
-            return new TournamentResponseDTO
-            {
-                Id = tournament.Id,
-                Title = tournament.Title,
-                Description = tournament.Description,
-                MaxPlayers = tournament.MaxPlayers,
-                StartDate = tournament.StartDate
-            };
+            await _context.SaveChangesAsync();
+            
+            return await GetById(tournament.Id);
         }
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            var tournament = _context.tournaments.Find(id);
+            var tournament = await _context.Tournaments.FindAsync(id);
             if (tournament == null)
                 return false;
 
-            _context.tournaments.Remove(tournament);
-            _context.SaveChanges();
+            _context.Tournaments.Remove(tournament);
+            await _context.SaveChangesAsync();
             return true;
         }
     }

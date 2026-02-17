@@ -18,30 +18,42 @@ namespace WebAPIProject.Services
         {
             _context = context;
         }
-        public List<GameResponseDTO> GetAll(string? search = null)
+        public async Task<List<GameResponseDTO>> GetAll(string? search = null)
         {
-            var query = _context.games.AsQueryable();
+            var query = _context.Games
+                .Include(g => g.Tournament)
+                .AsQueryable();
 
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(t => t.Title.Contains(search));
             }
 
-            var games = query.ToList();
+            var games = await query.ToListAsync();
 
             return games.Select(t => new GameResponseDTO
             {
                 Id = t.Id,
                 Title = t.Title,
                 Time = t.Time,
-                TournamentId = t.TournamentId
+                TournamentId = t.TournamentId,
+                Tournament = t.Tournament == null ? null : new TournamentResponseDTO 
+                {
+                    Id = t.Tournament.Id,
+                    Title = t.Tournament.Title,
+                    Description = t.Tournament.Description,
+                    MaxPlayers = t.Tournament.MaxPlayers,
+                    StartDate = t.Tournament.StartDate
+                }
             }).ToList();
         }
-        public GameResponseDTO GetById(int id)
+        public async Task<GameResponseDTO> GetById(int id)
         {
-            var game = _context.games
-                .Include(g => g.Tournament)  
-                .FirstOrDefault(g => g.Id == id);
+            var game = await _context.Games
+                .Include(g => g.Tournament)
+                .FirstOrDefaultAsync(g => g.Id == id);
+
+            if (game == null) return null;
 
             return new GameResponseDTO
             {
@@ -49,10 +61,17 @@ namespace WebAPIProject.Services
                 Title = game.Title,
                 Time = game.Time,
                 TournamentId = game.TournamentId,
-                Tournament = game.Tournament  
+                Tournament = game.Tournament == null ? null : new TournamentResponseDTO
+                {
+                    Id = game.Tournament.Id,
+                    Title = game.Tournament.Title,
+                    Description = game.Tournament.Description,
+                    MaxPlayers = game.Tournament.MaxPlayers,
+                    StartDate = game.Tournament.StartDate
+                }   
             };
         }
-        public GameResponseDTO Create(GameCreateDTO gcdto)
+        public async Task<GameResponseDTO> Create(GameCreateDTO gcdto)
         {
             var game = new Game
             {
@@ -63,21 +82,15 @@ namespace WebAPIProject.Services
                 TournamentId = gcdto.TournamentId
             };
 
-            _context.games.Add(game);
-            _context.SaveChanges();
+            _context.Games.Add(game);
+            await _context.SaveChangesAsync();
 
-            return new GameResponseDTO  
-            {
-                Id = game.Id,
-                Title = game.Title,
-                Time = game.Time,
-                TournamentId = game.TournamentId
-            };
+            return await GetById(game.Id);
         }
 
-        public GameResponseDTO? Update(int id, GameUpdateDTO gudto)
+        public async Task<GameResponseDTO?> Update(int id, GameUpdateDTO gudto)
         {
-            var game = _context.games.Find(id);
+            var game = await _context.Games.FindAsync(id);
             if (game == null) return null;
 
             if (gudto.Title != null)
@@ -85,24 +98,19 @@ namespace WebAPIProject.Services
             if (gudto.Time.HasValue)
                 game.Time = gudto.Time.Value;
 
-            _context.SaveChanges();
+            _context.SaveChangesAsync();
 
-            return new GameResponseDTO
-            {
-                Id = game.Id,
-                Title = game.Title,
-                Time = game.Time,
-                TournamentId = game.TournamentId
-            };
+           return await GetById(game.Id);
         }
-        public bool Delete(int id)
+        public async Task<bool> Delete(int id)
         {
-            var game = _context.games.Find(id);
+            var game = await _context.Games.FindAsync(id);
             if (game == null)
                 return false;
 
-            _context.games.Remove(game);
-            _context.SaveChanges();
+            _context.Games.Remove(game);
+            await _context.SaveChangesAsync();
+
             return true;
         }
 

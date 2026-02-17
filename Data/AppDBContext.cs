@@ -4,13 +4,8 @@ namespace WebAPIProject.Data
 {
     public class AppDbContext : DbContext
     {
-        public DbSet<Tournaments> tournaments { get; set; }
-        public DbSet<Game> games { get; set; }
-        public AppDbContext(DbContextOptions<AppDbContext> options)
-            : base(options)
-        {
-
-        }
+        public DbSet<Tournaments> Tournaments { get; set; }
+        public DbSet<Game> Games { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Tournaments>().HasKey(t => t.Id);
@@ -20,6 +15,11 @@ namespace WebAPIProject.Data
                 .HasOne(g => g.Tournament)
                 .WithMany(t => t.Games)
                 .HasForeignKey(g => g.TournamentId);
+        }
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options)
+        {
+
         }
     }
 }

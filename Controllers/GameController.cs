@@ -12,25 +12,26 @@ namespace WebAPIProject.Controllers
     public class GamesController : ControllerBase
     {
         private readonly GamesService _gamesService;
-
         public GamesController (GamesService gamesService)
         {
             _gamesService = gamesService;
         }
 
         [HttpGet]
-        public ActionResult<List<GameResponseDTO>> GetAll(string? search = null)
+        public async Task<ActionResult<List<GameResponseDTO>>> GetAll(string? search = null)
         {
-            var games = _gamesService.GetAll(search);
+            var games = await _gamesService.GetAll(search);
             return Ok(games);
         }
 
-        [HttpGet("{id:int}")] //specify function for GET(id) endpoint
-        public ActionResult<GameResponseDTO> GetById(int id) //function to get a tournament object through a specified id
+        [HttpGet("{id}")]
+        public async Task<ActionResult<GameResponseDTO>> GetById(int id)
         {
-            var game = _gamesService.GetById(id); //goes through service to find tournament with specified id
-               
-            return Ok(new GameResponseDTO  
+            var game = await _gamesService.GetById(id);
+
+            if (game == null) return NotFound();
+
+            return Ok(new GameResponseDTO
             {
                 Id = game.Id,
                 Title = game.Title,
@@ -38,26 +39,25 @@ namespace WebAPIProject.Controllers
                 TournamentId = game.TournamentId
             });
         }
-
         [HttpPost]
-        public ActionResult<GameResponseDTO> Create(GameCreateDTO tcdto)
+        public async Task<ActionResult<GameResponseDTO>> Create(GameCreateDTO gcdto)
         {
-            var createdGame = _gamesService.Create(tcdto);
+            var createdGame = await _gamesService.Create(gcdto);
             return CreatedAtAction(nameof(GetAll), new { id = createdGame.Id }, createdGame);
         }
 
         [HttpPut("{id:int}")]
-        public ActionResult<GameResponseDTO> Update(int id, GameUpdateDTO gudto)
+        public async Task<ActionResult<GameResponseDTO>> Update(int id, GameUpdateDTO gudto)
         {
-            var updatedGame = _gamesService.Update(id, gudto);
+            var updatedGame = await _gamesService.Update(id, gudto);
             if (updatedGame == null)
-                return NotFound();
+                return NotFound();  
             return Ok(updatedGame);
         }
         [HttpDelete("{id:int}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            if (!_gamesService.Delete(id))
+            if (!await _gamesService.Delete(id))
                 return NotFound();
             return NoContent();
         }
