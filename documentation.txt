@@ -1,0 +1,4 @@
+*1 Reason for not using Microsoft.AspNetCore.OpenApi is I was having issues with swagger where the UI would validate GetById on the browser-side. This making it so I couldnt GetById at api/Games/{id}. "For 'id': Required field is not provided."
+When adding an Id to the box in swagger the before mentioned fault code would appear. However the endpoint was fully working in postman. Using SharpGrip.FluentValidation.AutoValidation.Mvc solved the issue and all endpoints are working.
+  
+  
