@@ -32,7 +32,7 @@ namespace WebAPIProject.Services
             {
                 Id = t.Id,
                 Title = t.Title,
-                Time = t.Time,
+                //Time = t.Time,
                 TournamentId = t.TournamentId,
                 Tournament = t.Tournament == null ? null : new TournamentResponseDTO //mapping through tournament dto to get which tournament the game object belongs to
                 {
@@ -40,7 +40,7 @@ namespace WebAPIProject.Services
                     Title = t.Tournament.Title,
                     Description = t.Tournament.Description,
                     MaxPlayers = t.Tournament.MaxPlayers,
-                    StartDate = t.Tournament.StartDate
+                    //StartDate = t.Tournament.StartDate
                 }
             }).ToList();
         }
@@ -56,7 +56,7 @@ namespace WebAPIProject.Services
             {
                 Id = game.Id,
                 Title = game.Title,
-                Time = game.Time,
+              //  Time = game.Time,
                 TournamentId = game.TournamentId,
                 Tournament = game.Tournament == null ? null : new TournamentResponseDTO //mapping through tournament dto to get which tournament the game object belongs to
                 {
@@ -64,7 +64,7 @@ namespace WebAPIProject.Services
                     Title = game.Tournament.Title,
                     Description = game.Tournament.Description,
                     MaxPlayers = game.Tournament.MaxPlayers,
-                    StartDate = game.Tournament.StartDate
+                  //  StartDate = game.Tournament.StartDate
                 }   
             };
         }
