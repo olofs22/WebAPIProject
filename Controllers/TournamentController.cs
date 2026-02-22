@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-using WebAPIProject.DTO;
+using WebAPIProject.DTO.TournamentDTOs;
 using WebAPIProject.Models;
 using WebAPIProject.Services;
 
@@ -8,53 +8,49 @@ namespace WebAPIProject.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TournamentsController : ControllerBase //A controller based on the built in ControllerBase
+    public class TournamentsController : ControllerBase 
     {
-        private readonly TournamentsService _tournamentsService; //declaring service class
-        public TournamentsController (TournamentsService tournamentsService) //declaring controller that uses tournaments service class
+        private readonly TournamentsService _tournamentsService; //declaring service for dependency injection
+        public TournamentsController (TournamentsService tournamentsService) //constructor for dependency injection
         {
            _tournamentsService = tournamentsService;
         }
 
-        [HttpGet] //specify function for GET endpoint
-        public ActionResult<IEnumerable<Tournaments>> Get([FromQuery] string? title) //funtion to get a list of tournament objects by title or all if not specified
+        [HttpGet] //endpoint for GetAll and search by title 
+        public async Task<ActionResult<List<TournamentResponseDTO>>> GetAll(string? search = null) 
         {
-            if (!string.IsNullOrWhiteSpace(title))
-            {
-                var tournament = _tournamentsService.GetByTitle(title); //using service to find tournament with specified title
-                if (tournament == null) return NotFound(); //404 code of not found
-                return Ok(new[] { tournament });
-            }
-            return Ok(_tournamentsService.GetAll()); //200 code if found
+            var tournaments = await _tournamentsService.GetAll(search);
+            return Ok(tournaments);
         }
 
-        [HttpGet("{int id}")] //specify function for GET(id) endpoint
-        public ActionResult<TournamentResponseDTO> GetById(int id) //function to get a tournament object through a specified id
+        [HttpGet("{id:int}")] //endpoint for GetById
+        public async Task<ActionResult<TournamentResponseDTO>> GetById(int id)
         {
-            var tournament = _tournamentsService.GetById(id); //goes through service to find tournament with specified id
-            return Ok(tournament); //200 code if found
+            var tournament = await _tournamentsService.GetById(id); 
+            return Ok(tournament); 
         }
 
-        [HttpPost]
-        public ActionResult<TournamentResponseDTO> Create(TournamentCreateDTO tcdto)
+        [HttpPost] //endpoint for creating a tournament object
+        public async Task<ActionResult<TournamentResponseDTO>> Create(TournamentCreateDTO tcdto)
         {
-            var createdTournament = _tournamentsService.Create(tcdto);  // ← Fungerar nu!
-            return CreatedAtAction(nameof(Get), new { id = createdTournament.Id }, createdTournament);
+            var createdTournament = await _tournamentsService.Create(tcdto); 
+            return CreatedAtAction(nameof(GetById), new { id = createdTournament.Id }, createdTournament);
         }
 
-        [HttpPut("{id:it}")]
-        public ActionResult<TournamentResponseDTO> Update(int id, TournamentUpdateDTO tudto)
+        [HttpPut("{id:int}")] //endpoint for editing a tournament object by id
+        public async Task<ActionResult<TournamentResponseDTO>> Update(int id, TournamentUpdateDTO tudto)
         {
-            var updatedTournament = _tournamentsService.Update(id, tudto);
-            if (updatedTournament == null)
-                return NotFound();
+            var updatedTournament = await _tournamentsService.Update(id, tudto);
+
+            if (updatedTournament == null)  return NotFound();
+
             return Ok(updatedTournament);
         }
 
-        [HttpDelete("{id:int}")]
-        public ActionResult Delete(int id)
+        [HttpDelete("{id:int}")] //endpoint for deleting a tournament object by id
+        public async Task<ActionResult> Delete(int id)
         {
-            if (!_tournamentsService.Delete(id))
+            if (!await _tournamentsService.Delete(id))
                 return NotFound();
             return NoContent();
         }
