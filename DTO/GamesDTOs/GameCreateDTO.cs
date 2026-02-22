@@ -2,11 +2,10 @@
 
 namespace WebAPIProject.DTO.GamesDTOs
 {
-    public class GameCreateDTO
+    public class GameCreateDTO //DTO controlling the data that can be set when creating the object
     {
         public string Title { get; set; } = null!;
-        public DateTime StartTime { get; set; }
         public int TournamentId { get; set; }
-
+        public DateTime StartTime { get; set; } 
     }
 }

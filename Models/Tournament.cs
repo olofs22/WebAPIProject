@@ -1,6 +1,6 @@
 ﻿namespace WebAPIProject.Models
 {
-    public class Tournaments
+    public class Tournament //object for Tournament model
     {
         public int Id { get; set; }
         public string Title { get; set; }

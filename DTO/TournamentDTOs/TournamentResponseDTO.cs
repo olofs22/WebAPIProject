@@ -3,7 +3,7 @@ using WebAPIProject.DTO.GamesDTOs;
 
 namespace WebAPIProject.DTO.TournamentDTOs
 {
-    public class TournamentResponseDTO
+    public class TournamentResponseDTO ////DTO controlling which data can be returned to the client
     {
         public int Id { get; set; }
         public string Title { get; set; } = null;

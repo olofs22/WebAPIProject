@@ -8,17 +8,15 @@ using WebAPIProject.Models;
 
 namespace WebAPIProject.Services
 {
-    public class TournamentsService
+    public class TournamentsService //service class that handles logic speaking to the database for Tournament objects, used by the TournamentController
     {
-        private readonly AppDbContext _context;
-        private readonly List<Tournaments> _tournaments = new();
-        private int _nextId = 1;
+        private readonly AppDbContext _context; //dependency injection for database context
 
-        public TournamentsService(AppDbContext context)
+        public TournamentsService(AppDbContext context)//constructor for dependency injection
         {
             _context = context;
         }
-        public async Task<List<TournamentResponseDTO>> GetAll(string? search = null)
+        public async Task<List<TournamentResponseDTO>> GetAll(string? search = null) //function to get all objects from database or search by title
         {
             var query = _context.Tournaments
                 .Include(t => t.Games)
@@ -31,14 +29,14 @@ namespace WebAPIProject.Services
 
             var tournaments = await query.ToListAsync();
 
-            return tournaments.Select(t => new TournamentResponseDTO
+            return tournaments.Select(t => new TournamentResponseDTO //mapping through dto to only send necessary information to the client 
             {
                 Id = t.Id,
                 Title = t.Title,
                 Description = t.Description,
                 MaxPlayers = t.MaxPlayers,
                 StartDate = t.StartDate,
-                Games = t.Games.Select(g => new GameResponseDTO
+                Games = t.Games.Select(g => new GameResponseDTO //mapping through game dto to get which tournament the game object belongs to
                 {
                     Id = g.Id,
                     Title = g.Title,
@@ -48,7 +46,7 @@ namespace WebAPIProject.Services
                 }).ToList()
             }).ToList();
         }
-        public async Task<TournamentResponseDTO> GetById (int id)
+        public async Task<TournamentResponseDTO> GetById (int id) //function to get an object by id from the database
         {
             var tournament = await _context.Tournaments
                 .Include(t => t.Games)
@@ -56,14 +54,14 @@ namespace WebAPIProject.Services
 
             if (tournament == null) return null;
 
-            return new TournamentResponseDTO
+            return new TournamentResponseDTO //mapping to dto to control which information is sent to the client
             {
                 Id = tournament.Id,
                 Title = tournament.Title,
                 Description = tournament.Description,
                 MaxPlayers = tournament.MaxPlayers,
                 StartDate = tournament.StartDate,
-                Games = tournament.Games.Select(g => new GameResponseDTO
+                Games = tournament.Games.Select(g => new GameResponseDTO //mapping through game dto to get which games belong to that tournament
                 {
                     Id = g.Id,
                     Title = g.Title,
@@ -73,23 +71,9 @@ namespace WebAPIProject.Services
                 }).ToList()
             };
         }
-        public async Task<TournamentResponseDTO> GetByTitle(string title)
+        public async Task<TournamentResponseDTO> Create(TournamentCreateDTO tcdto) //function to create a new tournament object and add it to the database
         {
-            var tournament = await _context.Tournaments.FirstOrDefaultAsync(t => t.Title == title);
-            if (tournament == null) return null;
-
-            return new TournamentResponseDTO
-            {
-                Id = tournament.Id,
-                Title = tournament.Title,
-                Description = tournament.Description,
-                MaxPlayers = tournament.MaxPlayers,
-                StartDate = tournament.StartDate
-            };
-        }
-        public async Task<TournamentResponseDTO> Create(TournamentCreateDTO tcdto)
-        {
-            var tournament = new Tournaments  
+            var tournament = new Tournament  
             {
                 Title = tcdto.Title,
                 Description = tcdto.Description,
@@ -102,7 +86,7 @@ namespace WebAPIProject.Services
 
             return await GetById(tournament.Id);
         }
-        public async Task<TournamentResponseDTO> Update(int id, TournamentUpdateDTO tudto)
+        public async Task<TournamentResponseDTO> Update(int id, TournamentUpdateDTO tudto) //function to edit or update existing tournament object in the database by id
         {
             var tournament = await _context.Tournaments.FindAsync(id);
             if (tournament == null) return null;
@@ -123,7 +107,7 @@ namespace WebAPIProject.Services
             
             return await GetById(tournament.Id);
         }
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id) //function to delete an object from the database by id
         {
             var tournament = await _context.Tournaments.FindAsync(id);
             if (tournament == null)

@@ -8,17 +8,14 @@ using WebAPIProject.Models;
 
 namespace WebAPIProject.Services
 {
-    public class GamesService
+    public class GamesService //service class that handles logic speaking to the database for Game objects, used by the GameController
     {
-        private readonly AppDbContext _context;
-        private readonly List<Game> _games = new();
-        private int _nextId = 1;
-
-        public GamesService(AppDbContext context)
+        private readonly AppDbContext _context; //dependency injection for database context
+        public GamesService(AppDbContext context) //constructor for dependency injection
         {
             _context = context;
         }
-        public async Task<List<GameResponseDTO>> GetAll(string? search = null)
+        public async Task<List<GameResponseDTO>> GetAll(string? search = null) //function to get all objects from database or search by title
         {
             var query = _context.Games
                 .Include(g => g.Tournament)
@@ -31,13 +28,13 @@ namespace WebAPIProject.Services
 
             var games = await query.ToListAsync();
 
-            return games.Select(t => new GameResponseDTO
+            return games.Select(t => new GameResponseDTO //mapping through dto to only send necessary information to the client
             {
                 Id = t.Id,
                 Title = t.Title,
                 Time = t.Time,
                 TournamentId = t.TournamentId,
-                Tournament = t.Tournament == null ? null : new TournamentResponseDTO 
+                Tournament = t.Tournament == null ? null : new TournamentResponseDTO //mapping through tournament dto to get which tournament the game object belongs to
                 {
                     Id = t.Tournament.Id,
                     Title = t.Tournament.Title,
@@ -47,7 +44,7 @@ namespace WebAPIProject.Services
                 }
             }).ToList();
         }
-        public async Task<GameResponseDTO> GetById(int id)
+        public async Task<GameResponseDTO> GetById(int id) //function to get an object by id from the database
         {
             var game = await _context.Games
                 .Include(g => g.Tournament)
@@ -55,13 +52,13 @@ namespace WebAPIProject.Services
 
             if (game == null) return null;
 
-            return new GameResponseDTO
+            return new GameResponseDTO //mapping to dto to control which information is sent to the client
             {
                 Id = game.Id,
                 Title = game.Title,
                 Time = game.Time,
                 TournamentId = game.TournamentId,
-                Tournament = game.Tournament == null ? null : new TournamentResponseDTO
+                Tournament = game.Tournament == null ? null : new TournamentResponseDTO //mapping through tournament dto to get which tournament the game object belongs to
                 {
                     Id = game.Tournament.Id,
                     Title = game.Tournament.Title,
@@ -71,7 +68,7 @@ namespace WebAPIProject.Services
                 }   
             };
         }
-        public async Task<GameResponseDTO> Create(GameCreateDTO gcdto)
+        public async Task<GameResponseDTO> Create(GameCreateDTO gcdto) //function to create a new game object and add it to the database
         {
             var game = new Game
             {
@@ -88,21 +85,21 @@ namespace WebAPIProject.Services
             return await GetById(game.Id);
         }
 
-        public async Task<GameResponseDTO?> Update(int id, GameUpdateDTO gudto)
+        public async Task<GameResponseDTO?> Update(int id, GameUpdateDTO gudto) //function to edit or update existing game object in the database by id
         {
             var game = await _context.Games.FindAsync(id);
             if (game == null) return null;
 
-            if (gudto.Title != null)
+            if (gudto.Title != null) 
                 game.Title = gudto.Title;
             if (gudto.Time.HasValue)
                 game.Time = gudto.Time.Value;
 
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
 
            return await GetById(game.Id);
         }
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id) //function to delete an object from the database by id
         {
             var game = await _context.Games.FindAsync(id);
             if (game == null)

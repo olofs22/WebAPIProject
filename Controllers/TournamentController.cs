@@ -8,36 +8,36 @@ namespace WebAPIProject.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class TournamentsController : ControllerBase //A controller based on the built in ControllerBase
+    public class TournamentsController : ControllerBase 
     {
-        private readonly TournamentsService _tournamentsService; //declaring service class
-        public TournamentsController (TournamentsService tournamentsService) //declaring controller that uses tournaments service class
+        private readonly TournamentsService _tournamentsService; //declaring service for dependency injection
+        public TournamentsController (TournamentsService tournamentsService) //constructor for dependency injection
         {
            _tournamentsService = tournamentsService;
         }
 
-        [HttpGet] //specify function for GET endpoint
-        public async Task<ActionResult<List<TournamentResponseDTO>>> GetAll(string? search = null) //funtion to get a list of tournament objects by title or all if not specified
+        [HttpGet] //endpoint for GetAll and search by title 
+        public async Task<ActionResult<List<TournamentResponseDTO>>> GetAll(string? search = null) 
         {
             var tournaments = await _tournamentsService.GetAll(search);
             return Ok(tournaments);
         }
 
-        [HttpGet("{id:int}")] //specify function for GET(id) endpoint
-        public async Task<ActionResult<TournamentResponseDTO>> GetById(int id) //function to get a tournament object through a specified id
+        [HttpGet("{id:int}")] //endpoint for GetById
+        public async Task<ActionResult<TournamentResponseDTO>> GetById(int id)
         {
-            var tournament = await _tournamentsService.GetById(id); //goes through service to find tournament with specified id
-            return Ok(tournament); //200 code if found
+            var tournament = await _tournamentsService.GetById(id); 
+            return Ok(tournament); 
         }
 
-        [HttpPost]
+        [HttpPost] //endpoint for creating a tournament object
         public async Task<ActionResult<TournamentResponseDTO>> Create(TournamentCreateDTO tcdto)
         {
-            var createdTournament = await _tournamentsService.Create(tcdto);  // ← Fungerar nu!
+            var createdTournament = await _tournamentsService.Create(tcdto); 
             return CreatedAtAction(nameof(GetById), new { id = createdTournament.Id }, createdTournament);
         }
 
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}")] //endpoint for editing a tournament object by id
         public async Task<ActionResult<TournamentResponseDTO>> Update(int id, TournamentUpdateDTO tudto)
         {
             var updatedTournament = await _tournamentsService.Update(id, tudto);
@@ -47,7 +47,7 @@ namespace WebAPIProject.Controllers
             return Ok(updatedTournament);
         }
 
-        [HttpDelete("{id:int}")]
+        [HttpDelete("{id:int}")] //endpoint for deleting a tournament object by id
         public async Task<ActionResult> Delete(int id)
         {
             if (!await _tournamentsService.Delete(id))

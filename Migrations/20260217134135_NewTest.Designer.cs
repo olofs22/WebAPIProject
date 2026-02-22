@@ -50,7 +50,7 @@ namespace WebAPIProject.Migrations
                     b.ToTable("games");
                 });
 
-            modelBuilder.Entity("WebAPIProject.Models.Tournaments", b =>
+            modelBuilder.Entity("WebAPIProject.Models.Tournament", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,7 +79,7 @@ namespace WebAPIProject.Migrations
 
             modelBuilder.Entity("WebAPIProject.Models.Game", b =>
                 {
-                    b.HasOne("WebAPIProject.Models.Tournaments", "Tournament")
+                    b.HasOne("WebAPIProject.Models.Tournament", "Tournament")
                         .WithMany("Games")
                         .HasForeignKey("TournamentId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -88,7 +88,7 @@ namespace WebAPIProject.Migrations
                     b.Navigation("Tournament");
                 });
 
-            modelBuilder.Entity("WebAPIProject.Models.Tournaments", b =>
+            modelBuilder.Entity("WebAPIProject.Models.Tournament", b =>
                 {
                     b.Navigation("Games");
                 });
