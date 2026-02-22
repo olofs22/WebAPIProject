@@ -35,7 +35,7 @@ namespace WebAPIProject.Controllers
             {
                 Id = game.Id,
                 Title = game.Title,
-                Time = game.Time,
+                //Time = game.Time,
                 TournamentId = game.TournamentId
             });
         }

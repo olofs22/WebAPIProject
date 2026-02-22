@@ -35,12 +35,12 @@ namespace WebAPIProject.Services
                 Title = t.Title,
                 Description = t.Description,
                 MaxPlayers = t.MaxPlayers,
-                StartDate = t.StartDate,
+                //StartDate = t.StartDate,
                 Games = t.Games.Select(g => new GameResponseDTO //mapping through game dto to get which tournament the game object belongs to
                 {
                     Id = g.Id,
                     Title = g.Title,
-                    Time = g.Time,
+                    //Time = g.Time,
                     TournamentId = g.TournamentId,
                     Tournament = null 
                 }).ToList()
@@ -60,12 +60,12 @@ namespace WebAPIProject.Services
                 Title = tournament.Title,
                 Description = tournament.Description,
                 MaxPlayers = tournament.MaxPlayers,
-                StartDate = tournament.StartDate,
+              //  StartDate = tournament.StartDate,
                 Games = tournament.Games.Select(g => new GameResponseDTO //mapping through game dto to get which games belong to that tournament
                 {
                     Id = g.Id,
                     Title = g.Title,
-                    Time = g.Time,
+                   // Time = g.Time,
                     TournamentId = g.TournamentId,
                     Tournament = null 
                 }).ToList()
