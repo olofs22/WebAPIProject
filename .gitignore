@@ -3,6 +3,22 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+
+# Build outputs
+bin/
+obj/
+
+# User secrets and local settings
+appsettings.Development.json
+*.user
+
+# Visual Studio files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
 # User-specific files
 *.rsuser
 *.suo
