@@ -1,0 +1,165 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;800&display=swap');
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Figtree', sans-serif;
+    background: #f0ebe3;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    transition: box-shadow 0.3s;
+}
+
+    /* Mood */
+    .card.mood-happy {
+        box-shadow: 0 2px 20px rgba(245,166,35,0.2);
+    }
+
+    .card.mood-focused {
+        box-shadow: 0 2px 20px rgba(42,157,143,0.2);
+    }
+
+    .card.mood-tired {
+        box-shadow: 0 2px 20px rgba(123,111,160,0.2);
+    }
+
+.avatar {
+    font-size: 2.5rem;
+    text-align: center;
+}
+
+h2 {
+    font-size: 1.2rem;
+    font-weight: 800;
+    text-align: center;
+    min-height: 1.5rem;
+}
+
+#moodText {
+    text-align: center;
+    font-size: 0.75rem;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+input[type="text"], select {
+    width: 100%;
+    padding: 0.6rem 0.9rem;
+    border: 1.5px solid #e8e2d9;
+    border-radius: 8px;
+    font-family: 'Figtree', sans-serif;
+    font-size: 0.9rem;
+    background: #faf8f5;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+    input[type="text"]:focus, select:focus {
+        border-color: #e8533a;
+    }
+
+button {
+    padding: 0.6rem 1rem;
+    background: #e8533a;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Figtree', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+    button:hover {
+        opacity: 0.85;
+    }
+
+#avatarBtn {
+    background: transparent;
+    border: 1.5px solid #e8e2d9;
+    color: #aaa;
+}
+
+    #avatarBtn:hover {
+        border-color: #e8533a;
+        color: #e8533a;
+        opacity: 1;
+    }
+
+/* Todo list */
+#todoList {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+    #todoList li {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.6rem 0.8rem;
+        background: #faf8f5;
+        border: 1.5px solid #e8e2d9;
+        border-radius: 8px;
+    }
+
+        #todoList li input[type="checkbox"] {
+            accent-color: #e8533a;
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        #todoList li span {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        #todoList li:has(input:checked) span {
+            text-decoration: line-through;
+            color: #bbb;
+        }
+
+        #todoList li button {
+            background: transparent;
+            color: #ccc;
+            font-size: 0.75rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            border: none;
+        }
+
+            #todoList li button:hover {
+                background: #fee2e2;
+                color: #e53e3e;
+                opacity: 1;
+            }
+
+#stats {
+    font-size: 0.75rem;
+    color: #aaa;
+    text-align: center;
+}
